@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JuanPO — Showcase</title>
+<style>
+  :root {
+    --cycle: 16s;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%;
+    background: transparent;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  .stage {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    perspective: 1800px;
+    perspective-origin: 50% 50%;
+    overflow: hidden;
+  }
+
+  .card {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: min(95vw, 680px);
+    height: min(95vh, 980px);
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    will-change: transform, opacity;
+    opacity: 0;
+    animation: scene var(--cycle) cubic-bezier(.45,.05,.55,.95) infinite;
+  }
+  .card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Cards are staggered every 25% of the cycle. Each card's visible window is
+     28% — only a 3%-of-cycle (~0.48s) overlap, and inside that overlap the two
+     cards CROSS-FADE: outgoing fades 1→0 while incoming fades 0→1, so the
+     combined visible content stays at ~1 card-worth. No more two-whole-images
+     stacked. */
+  .card-1 { animation-delay: 0s; }
+  .card-2 { animation-delay: calc(var(--cycle) * -0.75); }
+  .card-3 { animation-delay: calc(var(--cycle) * -0.5); }
+  .card-4 { animation-delay: calc(var(--cycle) * -0.25); }
+
+  @keyframes scene {
+    /* ENTRY: opacity 0→1 over 0%–3%, rotation -45° → 0° over 0%–6% */
+    0%   { opacity: 0; transform: rotateY(-45deg) scale(.9); }
+    3%   { opacity: 1; transform: rotateY(-22deg) scale(.96); }
+    6%   {              transform: rotateY(0deg)  scale(1); }
+
+    /* HOLD with subtle scale breathing */
+    14%  {              transform: rotateY(0deg)  scale(1.05); }
+    22%  { opacity: 1; transform: rotateY(0deg)  scale(1); }
+
+    /* EXIT: rotation 0° → +45° over 22%–28%, opacity 1→0 over 25%–28% (the
+       3% overlap zone where the next card is fading in symmetrically) */
+    25%  { opacity: 1; transform: rotateY(22deg) scale(.96); }
+    28%  { opacity: 0; transform: rotateY(45deg) scale(.9); }
+
+    /* Hidden the rest of the cycle */
+    100% { opacity: 0; }
+  }
+
+  @media (max-width: 700px) {
+    .card { width: 55vw; height: 75vh; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .card { animation: none !important; }
+    .card-1 { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="card card-1"><img src="work/1.png" width="1024" height="1536" alt="JuanPO — I turn complex business problems into digital products that work" loading="eager" decoding="async" fetchpriority="high"></div>
+    <div class="card card-2"><img src="work/2.png" width="916"  height="1475" alt="Travel discovery app" loading="lazy" decoding="async"></div>
+    <div class="card card-3"><img src="work/3.png" width="1024" height="1536" alt="Sprint task board" loading="lazy" decoding="async"></div>
+    <div class="card card-4"><img src="work/4.png" width="1024" height="1536" alt="Collaboration whiteboard" loading="lazy" decoding="async"></div>
+  </div>
+</body>
+</html>

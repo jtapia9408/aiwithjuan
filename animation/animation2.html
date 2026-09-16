@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JuanPO — Queue Showcase</title>
+<style>
+  :root {
+    --cycle: 24s;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%;
+    background: transparent;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  .stage {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    perspective: 1800px;
+    perspective-origin: 50% 45%;
+    transform-style: preserve-3d;
+    overflow: visible;
+  }
+
+  .card {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: min(42vw, 540px);
+    height: min(72vh, 780px);
+    transform-style: preserve-3d;
+    will-change: transform, opacity;
+    opacity: 0;
+    animation: queue var(--cycle) cubic-bezier(.55,.05,.25,1) infinite;
+  }
+  .card img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter:
+      drop-shadow(0 35px 55px rgba(20,15,5,.28))
+      drop-shadow(0 12px 22px rgba(20,15,5,.16));
+  }
+
+  /* Queue order — staggered so all 4 slots are filled at all times.
+     Card 1 starts at slot 1 (front).
+     Card 2 starts at slot 2, will reach front next.
+     Card 3 starts at slot 3.
+     Card 4 starts at slot 4 (back). */
+  .card-1 { animation-delay: 0s; }
+  .card-2 { animation-delay: calc(var(--cycle) * -0.75); }
+  .card-3 { animation-delay: calc(var(--cycle) * -0.50); }
+  .card-4 { animation-delay: calc(var(--cycle) * -0.25); }
+
+  /* Each card cycles through 4 queue slots:
+     SLOT 1 (front)  → fly UP & BACK to slot 4
+     SLOT 4 (back)   → step forward to slot 3
+     SLOT 3          → step forward to slot 2
+     SLOT 2          → step forward to slot 1 (front)
+
+     During the front hold, the card softly zooms in (1.0 → 1.15) then back out. */
+  @keyframes queue {
+    /* === SLOT 1 — front of queue, hold + zoom in/out === */
+    0%   { opacity: 1; transform: translate3d(0,    0px,    0px) scale(1.00); }
+    10%  { opacity: 1; transform: translate3d(0,    0px,    0px) scale(1.15); }
+    20%  { opacity: 1; transform: translate3d(0,    0px,    0px) scale(1.00); }
+
+    /* === Front → Back: card lifts up & away, fades through, lands at slot 4 === */
+    22%  { opacity: 0.85; transform: translate3d(0, -80px,   80px) scale(1.05); }
+    25%  { opacity: 0;    transform: translate3d(0, -180px, -200px) scale(0.78); }
+    28%  { opacity: 0.55; transform: translate3d(0, -90px,  -300px) scale(0.76); }
+
+    /* === SLOT 4 — back of queue (settling) === */
+    32%  { opacity: 0.55; transform: translate3d(0, -90px,  -300px) scale(0.76); }
+    48%  { opacity: 0.55; transform: translate3d(0, -90px,  -300px) scale(0.76); }
+
+    /* === Slot 4 → Slot 3 === */
+    52%  { opacity: 0.72; transform: translate3d(0, -60px,  -200px) scale(0.84); }
+
+    /* === SLOT 3 === */
+    55%  { opacity: 0.72; transform: translate3d(0, -60px,  -200px) scale(0.84); }
+    73%  { opacity: 0.72; transform: translate3d(0, -60px,  -200px) scale(0.84); }
+
+    /* === Slot 3 → Slot 2 === */
+    77%  { opacity: 0.88; transform: translate3d(0, -30px,  -100px) scale(0.92); }
+
+    /* === SLOT 2 — just behind front === */
+    80%  { opacity: 0.88; transform: translate3d(0, -30px,  -100px) scale(0.92); }
+    98%  { opacity: 0.88; transform: translate3d(0, -30px,  -100px) scale(0.92); }
+
+    /* === Slot 2 → Slot 1 (front) === */
+    100% { opacity: 1;    transform: translate3d(0,    0px,    0px) scale(1.00); }
+  }
+
+  @media (max-width: 700px) {
+    .card { width: 80vw; height: 64vh; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .card { animation: none !important; }
+    .card-1 { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="card card-1"><img src="work/1.png" alt="JuanPO — I turn complex business problems into digital products that work" loading="eager" decoding="async"></div>
+    <div class="card card-2"><img src="work/2.png" alt="Travel discovery app" loading="eager" decoding="async"></div>
+    <div class="card card-3"><img src="work/3.png" alt="Sprint task board" loading="eager" decoding="async"></div>
+    <div class="card card-4"><img src="work/4.png" alt="Collaboration whiteboard" loading="eager" decoding="async"></div>
+  </div>
+</body>
+</html>
